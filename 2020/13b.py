@@ -9,7 +9,7 @@ ts = 0
 for bus in buses:
     if bus != 'x':
         bus = int(bus)
-        while (mod := ts % bus) != 0:
+        while ts % bus:
             ts += period
         period *= bus
     ts += 1
