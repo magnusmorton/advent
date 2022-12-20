@@ -1,4 +1,4 @@
-use std::{collections::HashSet, hash::Hash};
+use std::collections::HashSet;
 fn priority(c: char) -> u8 {
     if c.is_lowercase() {
         return c as u8 - 'a' as u8 + 1;
