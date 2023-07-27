@@ -1,6 +1,6 @@
-use std::{fs, rc::Rc, cell::RefCell, process::Child, ops::Deref, collections::HashMap};
+use std::{ rc::Rc, cell::RefCell, collections::HashMap};
 
-use regex::{Regex, RegexSet};
+use regex::Regex;
 
 struct FileNode {
     name: String,
@@ -15,7 +15,7 @@ fn main() {
     let mut pwd = root.clone();
     let mut tot: usize = 0;
     let cd_reg = Regex::new(r"\$ cd (.+)").unwrap();
-    let ls_reg = Regex::new(r"\$ ls").unwrap();
+    //let ls_reg = Regex::new(r"\$ ls").unwrap();
     let dir_reg =Regex::new(r"dir (.+)").unwrap();
     let file_reg = Regex::new(r"(\d+) (.+)").unwrap();
     for line in str.lines() {
@@ -50,9 +50,6 @@ fn main() {
                 pwd = child.unwrap().clone();
             }
             
-        } else if let Some(cap) = ls_reg.captures(line) {
-            
-            println!("ls")
         } else if let Some(cap) = dir_reg.captures(line) {
             let name = cap.get(1).unwrap().as_str().to_string();
             let namec = name.clone();
