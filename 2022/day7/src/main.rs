@@ -10,7 +10,7 @@ struct FileNode {
 }
 
 fn main() {
-    let str = std::fs::read_to_string("input.txt").unwrap();
+    let str = std::fs::read_to_string("test.txt").unwrap();
     let root = Rc::new(RefCell::new(FileNode{name:"/".to_string(),size: 0, children: Some(HashMap::new()), parent: None}));
     let mut pwd = root.clone();
     let mut tot: usize = 0;
@@ -72,5 +72,31 @@ fn main() {
         }
     }
 
-    println!("{}", tot)
+    let mut stack = Vec::new();
+    let mut other_stack = Vec::new();
+    stack.push(root.clone());
+    while !stack.is_empty() {
+        let current = stack.pop().unwrap();
+        other_stack.push(current.clone());
+
+        for child in current.borrow().children.as_ref().unwrap().values() {
+            if child.borrow().children.is_some() {
+                stack.push(child.clone())
+            }
+        }
+    }
+
+    while !other_stack.is_empty() {
+        let current = other_stack.pop().unwrap();
+        println!("{}",current.borrow().name);
+        let mut size = 0;
+        for child in current.borrow().children.as_ref().unwrap().values() {
+            size += child.borrow().size;
+        }
+        current.borrow_mut().size = size;
+    }
+
+    println!("{}", tot);
+
+    println!("root: {}", root.borrow().size)
 }
