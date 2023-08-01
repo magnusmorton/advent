@@ -1,4 +1,4 @@
-use std::{ rc::Rc, cell::RefCell, collections::HashMap};
+use std::{ rc::Rc, cell::RefCell, collections::{HashMap, VecDeque}};
 
 use regex::Regex;
 
@@ -10,7 +10,7 @@ struct FileNode {
 }
 
 fn main() {
-    let str = std::fs::read_to_string("test.txt").unwrap();
+    let str = std::fs::read_to_string("input.txt").unwrap();
     let root = Rc::new(RefCell::new(FileNode{name:"/".to_string(),size: 0, children: Some(HashMap::new()), parent: None}));
     let mut pwd = root.clone();
     let mut tot: usize = 0;
@@ -27,19 +27,7 @@ fn main() {
                 println!("ROOT");
                 pwd = root.clone()
             } else if dir == ".." {
-                println!("UP");
-                let clone = pwd.clone();
-                let mut brw = clone.borrow_mut();
-                let children = brw.children.as_ref().unwrap();
-                let mut size = 0;
-                for child in children.values() {
-                    size += child.borrow().size;
-                }
-                brw.size = size;
-                if size <= 100000 {
-                    tot += size
-                }
-                let tmp = brw.parent.as_ref().unwrap().clone();
+                let tmp = pwd.borrow().parent.as_ref().unwrap().clone();
                 pwd = tmp;
             } else {
                 let clone = pwd.clone();
@@ -73,11 +61,11 @@ fn main() {
     }
 
     let mut stack = Vec::new();
-    let mut other_stack = Vec::new();
+    let mut other_stack = VecDeque::new();
     stack.push(root.clone());
     while !stack.is_empty() {
         let current = stack.pop().unwrap();
-        other_stack.push(current.clone());
+        other_stack.push_front(current.clone());
 
         for child in current.borrow().children.as_ref().unwrap().values() {
             if child.borrow().children.is_some() {
@@ -86,17 +74,30 @@ fn main() {
         }
     }
 
-    while !other_stack.is_empty() {
-        let current = other_stack.pop().unwrap();
-        println!("{}",current.borrow().name);
+    for item in &other_stack {
         let mut size = 0;
-        for child in current.borrow().children.as_ref().unwrap().values() {
+        for child in item.borrow().children.as_ref().unwrap().values() {
             size += child.borrow().size;
         }
-        current.borrow_mut().size = size;
+        if size <= 100000 {
+            tot += size;
+        }
+        item.borrow_mut().size = size;
     }
-
     println!("{}", tot);
 
-    println!("root: {}", root.borrow().size)
+    
+
+    let unsused = 70000000 - root.borrow().size;
+    let target = 30000000 - unsused;
+    println!("root: {} unused: {} required: {}", root.borrow().size, unsused, target);
+    
+    let mut smallest: usize = usize::MAX;
+    for item in &other_stack {
+        let sz = item.borrow().size;
+        if sz >= target && sz < smallest {
+            smallest = sz
+        }
+    }
+    println!("smallest: {}", smallest)
 }
