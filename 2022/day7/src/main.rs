@@ -15,16 +15,12 @@ fn main() {
     let mut pwd = root.clone();
     let mut tot: usize = 0;
     let cd_reg = Regex::new(r"\$ cd (.+)").unwrap();
-    //let ls_reg = Regex::new(r"\$ ls").unwrap();
     let dir_reg =Regex::new(r"dir (.+)").unwrap();
     let file_reg = Regex::new(r"(\d+) (.+)").unwrap();
     for line in str.lines() {
         if let Some(cap) = cd_reg.captures(line) {
-            
             let dir = cap.get(1).unwrap().as_str();
-            println!("cd {}", dir);
             if dir == "/" {
-                println!("ROOT");
                 pwd = root.clone()
             } else if dir == ".." {
                 let tmp = pwd.borrow().parent.as_ref().unwrap().clone();
@@ -33,7 +29,6 @@ fn main() {
                 let clone = pwd.clone();
                 let brw = clone.borrow();
                 let children = brw.children.as_ref().unwrap();
-
                 let child = children.get(&dir.to_string());
                 pwd = child.unwrap().clone();
             }
@@ -52,7 +47,6 @@ fn main() {
             let namec = name.clone();
             let clone = pwd.clone();
             let mut brw = clone.borrow_mut();
-            println!("{:?} {}", brw.name, cap.get(2).unwrap().as_str());
             let children = brw.children.as_mut().unwrap();
             if !children.contains_key(&name) {
                 children.insert(name, Rc::new(RefCell::new(FileNode { name:namec, size: str::parse(cap.get(1).unwrap().as_str()).unwrap(), children: None, parent: Some(pwd.clone()) })));
@@ -90,7 +84,6 @@ fn main() {
 
     let unsused = 70000000 - root.borrow().size;
     let target = 30000000 - unsused;
-    println!("root: {} unused: {} required: {}", root.borrow().size, unsused, target);
     
     let mut smallest: usize = usize::MAX;
     for item in &other_stack {
