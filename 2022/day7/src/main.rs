@@ -3,7 +3,6 @@ use std::{ rc::Rc, cell::RefCell, collections::{HashMap, VecDeque}};
 use regex::Regex;
 
 struct FileNode {
-    name: String,
     size: usize,
     children: Option<HashMap<String,Rc<RefCell<FileNode>>>>,
     parent: Option<Rc<RefCell<FileNode>>>
@@ -11,11 +10,11 @@ struct FileNode {
 
 fn main() {
     let str = std::fs::read_to_string("input.txt").unwrap();
-    let root = Rc::new(RefCell::new(FileNode{name:"/".to_string(),size: 0, children: Some(HashMap::new()), parent: None}));
+    let root = Rc::new(RefCell::new(FileNode{size: 0, children: Some(HashMap::new()), parent: None}));
     let mut pwd = root.clone();
     let mut tot: usize = 0;
     let cd_reg = Regex::new(r"\$ cd (.+)").unwrap();
-    let dir_reg =Regex::new(r"dir (.+)").unwrap();
+    let dir_reg = Regex::new(r"dir (.+)").unwrap();
     let file_reg = Regex::new(r"(\d+) (.+)").unwrap();
     for line in str.lines() {
         let clone = pwd.clone();
@@ -34,15 +33,13 @@ fn main() {
             
         } else if let Some(cap) = dir_reg.captures(line) {
             let name = cap.get(1).unwrap().as_str().to_string();
-            let namec = name.clone();
             if !children.contains_key(&name) {
-                children.insert(name, Rc::new(RefCell::new(FileNode { name: namec, size: 0, children: Some(HashMap::new()), parent: Some(pwd.clone()) })));
+                children.insert(name, Rc::new(RefCell::new(FileNode { size: 0, children: Some(HashMap::new()), parent: Some(pwd.clone()) })));
             }
         } else if let Some(cap) = file_reg.captures(line) {
             let name = cap.get(2).unwrap().as_str().to_string();
-            let namec = name.clone();
             if !children.contains_key(&name) {
-                children.insert(name, Rc::new(RefCell::new(FileNode { name:namec, size: str::parse(cap.get(1).unwrap().as_str()).unwrap(), children: None, parent: Some(pwd.clone()) })));
+                children.insert(name, Rc::new(RefCell::new(FileNode {size: str::parse(cap.get(1).unwrap().as_str()).unwrap(), children: None, parent: Some(pwd.clone()) })));
             }
         }
     }
