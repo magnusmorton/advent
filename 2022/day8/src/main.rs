@@ -17,7 +17,7 @@ fn main() {
     for i in 0..count {
         visible[[0,i]] = 1;
         visible[[count-1, i]] = 1;
-        visible [[i, 0]] = 1;
+        visible[[i, 0]] = 1;
         visible[[i, count-1]] = 1;
     }
     
@@ -48,7 +48,7 @@ fn main() {
 
     let mut max = 0;
     for ((x,y), el) in arr.indexed_iter() {
-        // UP
+
         let (mut seenu, mut seend, mut seenl, mut seenr): (u64, u64, u64, u64) = (0,0,0,0);
         let mut yu = y;
         while yu != 0 {
