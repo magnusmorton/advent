@@ -40,53 +40,28 @@ fn a(file: String) {
         println!("{}", line);
         let parts:Vec<&str> = line.split_ascii_whitespace().collect();
         let mut vec = (0,0);
+        let step = parts[1].parse::<i32>().unwrap();
         match parts[0] {
             "R" => {
-                println!("right");
-                let step = parts[1].parse::<i32>().unwrap();
-                for i in 0..step {
-                    head.0 += 1;
-                    tail = update_tail(head, tail);
-                    visited.insert(tail);
-
-                }
+                vec = (1,0);
             },
             "L" => {
-                println!("left");
-                let step = parts[1].parse::<i32>().unwrap();
-
-                for i in 0..step {
-                    head.0 -= 1;
-                    tail = update_tail(head, tail);
-                    visited.insert(tail);
-
-                }
+                vec = (-1,0);
             },
             "D" => {
-                println!("Down");
-                let step = parts[1].parse::<i32>().unwrap();
-                for i in 0..step {
-                    head.1 -= 1;
-                    tail = update_tail(head, tail);
-                    visited.insert(tail);
-
-                }
+                vec = (0,-1);
             },
             "U" => {
-                println!("up");
-                let step = parts[1].parse::<i32>().unwrap();
-                for i in 0..step {
-                    head.1 += 1;
-                    tail = update_tail(head, tail);
-                    visited.insert(tail);
-
-                }
+                vec = (0,1);
             },
             _ => println!("error")
         }
-
-        println!("head, {:?}", head);
-        println!("tail, {:?}", tail);
+        for i in 0..step {
+            head.0 += vec.0;
+            head.1 += vec.1;
+            tail = update_tail(head, tail);
+            visited.insert(tail);
+        }
     }
     println!("visited {}", visited.len())
 }
