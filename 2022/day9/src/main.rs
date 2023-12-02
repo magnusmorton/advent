@@ -1,14 +1,10 @@
 
-use std::fs::File;
 use std::collections::HashSet;
 
 
 fn update_tail(head: (i32, i32), tail: (i32,i32)) -> (i32, i32) {
     let (dx, dy) = (head.0 - tail.0, head.1 - tail.1);
-    // if dx.abs() > 2 || dy.abs() > 2 {
-    //     println!("Weird: {:?} {:?} {:?}", (dx, dy), head, tail);
-    //     panic!("erakdsflasdjf");
-    // }
+
     match (dx, dy) {
         (2, 0) => (tail.0 + 1, tail.1),
         (0, 2) => (tail.0, tail.1 +1),
@@ -33,7 +29,7 @@ fn update_tail(head: (i32, i32), tail: (i32,i32)) -> (i32, i32) {
 fn main() {
     let path = "input.txt";
     let file = std::fs::read_to_string(path).unwrap();
-    //a(&file);
+    a(&file);
     b(&file);
 }
 
