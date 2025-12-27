@@ -19,6 +19,5 @@ int main()
         }
         tot += std::stoul(std::to_string(left) + std::to_string(right));
     }
-
     std::cout << "tot: " << tot << std::endl;
 }
