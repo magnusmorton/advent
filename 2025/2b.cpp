@@ -9,9 +9,9 @@ int main()
     size_t count = 0;
     std::string line;
     std::getline(std::cin, line);
-
     std::stringstream ss(line);
     std::string tok;
+
     while (std::getline(ss, tok, ',')) {
         size_t i = tok.find("-");
         std::string start = tok.substr(0, i);
@@ -24,9 +24,7 @@ int main()
                 invalid += num;
                 count++;
             }
-        }
-
-        
+        }        
     }
     std::cout << "invalid: " << invalid << " count: " << count <<  std::endl;
 }
