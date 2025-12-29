@@ -33,7 +33,6 @@ int main()
                     max = val;
                     max_i = i;
                 }
-                
             }
             vec.push_back(max);
             start = max_i + 1;
